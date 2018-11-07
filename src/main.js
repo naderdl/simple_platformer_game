@@ -3,11 +3,11 @@ import 'phaser';
 var config = {
     type: Phaser.AUTO,
     parent: 'phaser-example',
-    width: 800,
-    height: 600,
+    width: 1366,
+    height: 768,
     scene: {
-        preload: preload,
-        create: create
+        preload,
+        create
     }
 };
 
@@ -20,11 +20,11 @@ function preload ()
 
 function create ()
 {
-    var logo = this.add.image(400, 150, 'logo');
+    var logo = this.add.image(683, 150, 'logo');
 
     this.tweens.add({
         targets: logo,
-        y: 450,
+        y: 610,
         duration: 2000,
         ease: 'Power2',
         yoyo: true,
