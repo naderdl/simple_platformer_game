@@ -1,4 +1,15 @@
-# webStorm files
-.idea/
-# nodejs
+# System and IDE files
+Thumbs.db
+.DS_Store
+.idea
+*.suo
+*.sublime-project
+*.sublime-workspace
+.vscode/
+
+# Vendors
 node_modules/
+
+# Build
+build/
+/npm-debug.log
