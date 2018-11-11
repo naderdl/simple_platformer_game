@@ -2,6 +2,7 @@ import "phaser";
 const gameWidth = 930;
 const gameHeight = 400;
 var player;
+var cursors;
 
 var config = {
   type: Phaser.AUTO,
@@ -11,7 +12,7 @@ var config = {
     default: "arcade",
     arcade: {
       gravity: { y: 300 },
-      debug: false
+      debug: true
     }
   },
   scene: {
@@ -42,6 +43,7 @@ function preload() {
 }
 
 function create() {
+  this.cameras.main.roundPixels = true;
   // backGround
   this.add.tileSprite(500, 200, 1000, 400, "backGround");
   this.add.tileSprite(500, 260, 1000, 400, "middleGround");
@@ -108,16 +110,62 @@ function create() {
     "atlas",
     "player/idle/player-idle-1"
   );
+  player.body.gravity.y = 50;
+  player.setBounce(0.2);
+  console.log(this.physics);
   this.physics.add.collider(player, layer);
-  const debugGraphics = this.add.graphics().setAlpha(0.75);
-  layer.renderDebug(debugGraphics, {
-    tileColor: null, // Color of non-colliding tiles
-    collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-    faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+  player.setCollideWorldBounds(true);
+
+  player.body.setSize(12, 30, 8, 16);
+  // player.body.drag.setTo(1000, 0);
+  this.anims.create({
+    key: "idle",
+    frames: this.anims.generateFrameNames("atlas", {
+      prefix: "player/idle/player-idle-",
+      start: 1,
+      end: 4,
+      siffix: "",
+      zeroPad: 0
+    }),
+    frameRate: 12,
+    repeat: -1
   });
+
+  this.anims.create({
+    key: "run",
+    frames: this.anims.generateFrameNames("atlas", {
+      prefix: "player/run/player-run-",
+      start: 1,
+      end: 6,
+      siffix: "",
+      zeroPad: 0
+    }),
+    frameRate: 15,
+    repeat: -1
+  });
+  cursors = this.input.keyboard.createCursorKeys();
+  console.log(player);
 }
 
-function update() {}
+function update() {
+  if (cursors.left.isDown) {
+    // if the left arrow key is down
+    player.body.setVelocityX(-150); // move left
+    player.play("run", true);
+    player.flipX = true;
+  } else if (cursors.right.isDown) {
+    // if the right arrow key is down
+    player.body.setVelocityX(150); // move right
+    player.play("run", true);
+    player.flipX = false;
+  } else {
+    player.body.setVelocityX(0);
+    player.anims.play("idle", true);
+  }
+  if ((cursors.space.isDown || cursors.up.isDown) && player.body.onFloor()) {
+    player.body.setVelocityY(-170); // jump up
+  }
+}
 
 function setTopCollisionTiles(map, tileIndex) {
   var x, y, tile;
